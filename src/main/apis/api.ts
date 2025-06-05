@@ -1,16 +1,19 @@
 import { ipcMain, ipcRenderer } from 'electron'
-import { getHello, getZipCode } from './store'
+import { getHello, getConfig, storeConfig } from './store'
+import { Config } from './store'
 
 // mainプロセスにハンドリングする。mainプロセス上で呼び出す。
 export const setAPI = () => {
   ipcMain.handle('getHello', (_, name: string) => getHello(name))
-  ipcMain.handle('getZipCode', getZipCode)
+  ipcMain.handle('storeConfig', (_, config: Config) => storeConfig(config))
+  ipcMain.handle('getConfig', getConfig)
 }
 
 // rendererプロセスに公開するAPI。preload上で呼び出す。
 export const APIInvoker = {
   getHello: (name: string) => ipcRenderer.invoke('getHello', name),
-  getZipCode: () => ipcRenderer.invoke('getZipCode')
+  getConfig: () => ipcRenderer.invoke('getConfig'),
+  storeConfig: (config: Config) => ipcRenderer.invoke('storeConfig', config)
 }
 
 // rendererプロセスに公開するAPIの型定義。preload上で呼び出す。

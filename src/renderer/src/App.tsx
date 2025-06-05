@@ -1,32 +1,53 @@
+import { useState } from 'react'
+
 import Versions from './components/Versions'
 import electronLogo from './assets/electron.svg'
 
+export interface Config {
+  apiUrl: string
+}
+
 function App(): React.JSX.Element {
+  const [apiUrl, setApiUrl] = useState<string>('')
+
   const ipcHandle = async () => {
     const response = await window.api.getHello('Hello from renderer process!')
+    console.log(response)
+  }
+
+  const setConfig = async (url: string) => {
+    const response = await window.api.storeConfig({ apiUrl: url })
+    console.log(response)
+  }
+
+  const getConfig = async () => {
+    const response = await window.api.getConfig()
     console.log(response)
   }
 
   return (
     <>
       <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
+      <input
+        type="text"
+        className="input"
+        placeholder="Enter API URL"
+        onChange={(e) => setApiUrl(e.target.value)}
+      />
       <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
             Send IPC
+          </a>
+        </div>
+        <div className="action">
+          <a target="_blank" rel="noreferrer" onClick={() => setConfig(apiUrl)}>
+            Set Config
+          </a>
+        </div>
+        <div className="action">
+          <a target="_blank" rel="noreferrer" onClick={getConfig}>
+            Get Config
           </a>
         </div>
       </div>
