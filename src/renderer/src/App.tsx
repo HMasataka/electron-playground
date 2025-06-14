@@ -11,7 +11,7 @@ function App(): React.JSX.Element {
   const [apiUrl, setApiUrl] = useState<string>('')
 
   const ipcHandle = async () => {
-    const response = await window.api.getHello('Hello from renderer process!')
+    const response = await window.api.database()
     console.log(response)
   }
 
